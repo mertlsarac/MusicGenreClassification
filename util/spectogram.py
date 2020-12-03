@@ -1,5 +1,4 @@
 import librosa, librosa.display
-import pylab
 import os
 import matplotlib.pyplot as plt
 
@@ -12,7 +11,7 @@ class Spectogram:
     def __init__(self):
         pass
 
-    def create_database(self):
+    def create_database(self, enable_6s=False):
         index_list = []
 
         # get the index list
@@ -30,13 +29,21 @@ class Spectogram:
 
             for index in index_list:
                 url = "database/Data/genres_original/" + gen_type + "/" + gen_type + '.000' + index + '.wav'
-                scale, sr = self.load(url)
-                S_scale, Y_scale = self.create(scale, sr)
 
-                self.save(Y_scale, sr, SAVE_PATH + gen_type + '/' + gen_type+ '.000' + index + '.png')
+                if enable_6s:
+                    for i in range(0, 30, 6):
+                        scale, sr = self.load(url, i, 6)
+                        S_scale, Y_scale = self.create(scale)
+                        self.save(Y_scale, sr, SAVE_PATH + gen_type + '/' + gen_type + '.000' + index + '_sec' + str(i) + '.png')
+
+                else:
+                    scale, sr = self.load(url)
+                    S_scale, Y_scale = self.create(scale)
+                    self.save(Y_scale, sr, SAVE_PATH + gen_type + '/' + gen_type + '.000' + index + '.png')
+
                 print("Index: ", index, " created.")
 
-    def create(self, scale, sr):
+    def create(self, scale):
         S_scale = librosa.stft(scale, n_fft=FRAME_SIZE, hop_length=HOP_SIZE)
         Y_scale = librosa.amplitude_to_db(abs(S_scale))
         return S_scale, Y_scale
@@ -55,5 +62,5 @@ class Spectogram:
         plt.savefig(save_path, bbox_inches=None, pad_inches=0)
         plt.close()
 
-    def load(self, url):
-        return librosa.load(url)
+    def load(self, url, offset=0, duration=6):
+        return librosa.load(url, offset=offset, duration=duration)
