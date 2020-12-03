@@ -23,25 +23,32 @@ class Spectogram:
             index_list.append(index)
         print('Index list created.')
 
-        for gen_type in genre_types:
-            print('Gen type: ', gen_type, ' started.')
-            os.makedirs(SAVE_PATH + gen_type)
+        if enable_6s:
+            for gen_type in genre_types:
+                print('Gen type: ', gen_type, ' started.')
+                os.makedirs(SAVE_PATH + gen_type)
 
-            for index in index_list:
-                url = "database/Data/genres_original/" + gen_type + "/" + gen_type + '.000' + index + '.wav'
-
-                if enable_6s:
+                for index in index_list:
+                    url = "database/Data/genres_original/" + gen_type + "/" + gen_type + '.000' + index + '.wav'
                     for i in range(0, 30, 6):
                         scale, sr = self.load(url, i, 6)
                         S_scale, Y_scale = self.create(scale)
                         self.save(Y_scale, sr, SAVE_PATH + gen_type + '/' + gen_type + '.000' + index + '_sec' + str(i) + '.png')
 
-                else:
+                    print("Index: ", index, " created.")
+
+        else:
+            for gen_type in genre_types:
+                print('Gen type: ', gen_type, ' started.')
+                os.makedirs(SAVE_PATH + gen_type)
+
+                for index in index_list:
+                    url = "database/Data/genres_original/" + gen_type + "/" + gen_type + '.000' + index + '.wav'
                     scale, sr = self.load(url)
                     S_scale, Y_scale = self.create(scale)
                     self.save(Y_scale, sr, SAVE_PATH + gen_type + '/' + gen_type + '.000' + index + '.png')
 
-                print("Index: ", index, " created.")
+                    print("Index: ", index, " created.")
 
     def create(self, scale):
         S_scale = librosa.stft(scale, n_fft=FRAME_SIZE, hop_length=HOP_SIZE)
