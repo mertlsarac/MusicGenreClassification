@@ -33,7 +33,7 @@ class Spectogram:
                 scale, sr = self.load(url)
                 S_scale, Y_scale = self.create(scale, sr)
 
-                self.save(Y_scale, sr, SAVE_PATH + gen_type + '/' + gen_type+ '.000' + index + '.png')
+                self.save(Y_scale, sr, SAVE_PATH + gen_type + '/' + gen_type + '.000' + index + '.png')
                 print("Index: ", index, " created.")
 
     def create(self, scale, sr):
