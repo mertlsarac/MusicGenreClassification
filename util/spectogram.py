@@ -1,5 +1,7 @@
-import librosa, librosa.display
 import os
+
+import librosa
+import librosa.display
 import matplotlib.pyplot as plt
 
 genre_types = ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock']
@@ -7,6 +9,8 @@ FRAME_SIZE = 2048
 HOP_SIZE = 512
 
 SAVE_PATH = "database/spectograms/"
+
+
 class Spectogram:
     def __init__(self):
         pass
@@ -23,30 +27,57 @@ class Spectogram:
             index_list.append(index)
         print('Index list created.')
 
+        print("Enable5s: ", enable_5s)
+
         if enable_5s:
+            path = SAVE_PATH + 'enable_5s/'
+
+            if not os.path.exists(path):
+                os.makedirs(path)
+
             for gen_type in genre_types:
                 print('Gen type: ', gen_type, ' started.')
-                os.makedirs(SAVE_PATH + gen_type)
+
+                if not os.path.exists(path + gen_type):
+                    os.makedirs(path + gen_type)
 
                 for index in index_list:
                     url = "database/Data/genres_original/" + gen_type + "/" + gen_type + '.000' + index + '.wav'
                     for i in range(0, 30, 5):
-                        scale, sr = self.load(url, i, 5)
-                        S_scale, Y_scale = self.create(scale)
-                        self.save(Y_scale, sr, SAVE_PATH + gen_type + '/' + gen_type + '.000' + index + '_sec' + str(i) + '.png')
+                        if not os.path.exists(
+                                path + gen_type + '/' + gen_type + '.000' + index + '_sec' + str(i) + '.png'):
+
+                            try:
+                                scale, sr = self.load(url, i, 5)
+                                S_scale, Y_scale = self.create(scale)
+                                self.save(Y_scale, sr,
+                                          path + gen_type + '/' + gen_type + '.000' + index + '_sec' + str(i) + '.png')
+                            except:
+                                pass
 
                     print("Index: ", index, " created.")
 
+
         else:
+            path = SAVE_PATH + 'default/'
+            if not os.path.exists(path):
+                os.makedirs(path)
             for gen_type in genre_types:
                 print('Gen type: ', gen_type, ' started.')
-                os.makedirs(SAVE_PATH + gen_type)
+                if not os.path.exists(path + gen_type):
+                    os.makedirs(path + gen_type)
 
                 for index in index_list:
-                    url = "database/Data/genres_original/" + gen_type + "/" + gen_type + '.000' + index + '.wav'
-                    scale, sr = self.load(url)
-                    S_scale, Y_scale = self.create(scale)
-                    self.save(Y_scale, sr, SAVE_PATH + gen_type + '/' + gen_type + '.000' + index + '.png')
+                    if not os.path.exists(path + gen_type + '/' + gen_type + '.000' + index + '_sec' + str(i) + '.png'):
+                        url = "database/Data/genres_original/" + gen_type + "/" + gen_type + '.000' + index + '.wav'
+
+                        try:
+                            scale, sr = self.load(url)
+                            S_scale, Y_scale = self.create(scale)
+                            self.save(Y_scale, sr, path + gen_type + '/' + gen_type + '.000' + index + '.png')
+
+                        except:
+                            pass
 
                     print("Index: ", index, " created.")
 
