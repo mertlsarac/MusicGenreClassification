@@ -1,3 +1,3 @@
 # MusicGenreClassification
 
-Music genre classification using GTZAN dataset.
+GTZAN can be downloaded from: http://marsyas.info/downloads/datasets.html
