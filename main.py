@@ -1,5 +1,8 @@
 from util.spectogram import Spectogram
 
-spectogram = Spectogram()
+if __name__ == "__main__":
+    spectogram = Spectogram()
 
-spectogram.create_database(enable_6s=False)
+    spectogram.create_database(enable_5s=True)
+    spectogram.create_database(enable_5s=False)
+
