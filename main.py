@@ -1,8 +1,9 @@
-from util.spectogram import Spectogram
-
+from util.spectrogram import Spectrogram
+from util.database import createDatabasePickle
 if __name__ == "__main__":
-    spectogram = Spectogram()
+    #spectrogram = Spectrogram()
 
-    spectogram.create_database(enable_5s=True)
-    spectogram.create_database(enable_5s=False)
+    #spectrogram.create_database(enableOffset=True)
+    #spectrogram.create_database(enableOffset=False)
 
+    createDatabasePickle("database/spectrograms/default", "database/pickle_files/")
