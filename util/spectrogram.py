@@ -1,21 +1,21 @@
 import os
-
 import librosa
 import librosa.display
-import matplotlib.pyplot as plt
+import pylab
 
 genre_types = ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock']
 FRAME_SIZE = 2048
 HOP_SIZE = 512
 
-SAVE_PATH = "database/spectograms/"
+SAVE_PATH = "database/spectrograms/"
 
+OFFSET = 5
 
-class Spectogram:
+class Spectrogram:
     def __init__(self):
         pass
 
-    def create_database(self, enable_5s=False):
+    def create_database(self, enableOffset=False):
         index_list = []
 
         # get the index list
@@ -27,28 +27,33 @@ class Spectogram:
             index_list.append(index)
         print('Index list created.')
 
-        print("Enable5s: ", enable_5s)
+        print("EnableOffset: ", enableOffset, "\nOffset: ", OFFSET)
 
-        if enable_5s:
-            path = SAVE_PATH + 'enable_5s/'
+        if enableOffset:
+            path = SAVE_PATH + 'enableOffset'
 
+            # create folder
             if not os.path.exists(path):
                 os.makedirs(path)
 
+            # for each gen_type
             for gen_type in genre_types:
                 print('Gen type: ', gen_type, ' started.')
 
+                # create folder along with its gen_type
                 if not os.path.exists(path + gen_type):
                     os.makedirs(path + gen_type)
 
+                # for each song
                 for index in index_list:
+                    # create path for the song
                     url = "database/Data/genres_original/" + gen_type + "/" + gen_type + '.000' + index + '.wav'
-                    for i in range(0, 30, 5):
+                    for i in range(0, 30, OFFSET):
                         if not os.path.exists(
                                 path + gen_type + '/' + gen_type + '.000' + index + '_sec' + str(i) + '.png'):
 
                             try:
-                                scale, sr = self.load(url, i, 5)
+                                scale, sr = self.load(url, i, OFFSET)
                                 S_scale, Y_scale = self.create(scale)
                                 self.save(Y_scale, sr,
                                           path + gen_type + '/' + gen_type + '.000' + index + '_sec' + str(i) + '.png')
@@ -68,7 +73,7 @@ class Spectogram:
                     os.makedirs(path + gen_type)
 
                 for index in index_list:
-                    if not os.path.exists(path + gen_type + '/' + gen_type + '.000' + index + '_sec' + str(i) + '.png'):
+                    if not os.path.exists(path + gen_type + '/' + gen_type + '.000' + index + '_sec' + str(index) + '.png'):
                         url = "database/Data/genres_original/" + gen_type + "/" + gen_type + '.000' + index + '.wav'
 
                         try:
@@ -87,18 +92,17 @@ class Spectogram:
         return S_scale, Y_scale
 
     def save(self, Y_scale, sr, save_path):
-        plt.figure(figsize=(25, 10))
+        fig = pylab.gcf()
+        fig.set_size_inches(2.4, 2.4)
+        pylab.axis('off')  # no axis
+        pylab.axes([0., 0., 1., 1.], frameon=False, xticks=[], yticks=[])  # Remove the white edge
 
         librosa.display.specshow(
-            Y_scale,
-            sr=sr,
-            hop_length=HOP_SIZE,
-            x_axis="time",
-            y_axis="linear"
+            Y_scale
         )
 
-        plt.savefig(save_path, bbox_inches=None, pad_inches=0)
-        plt.close()
+        pylab.savefig(save_path, bbox_inches=None, pad_inches=0)
+        pylab.close()
 
-    def load(self, url, offset=0, duration=6):
+    def load(self, url, offset=0, duration=OFFSET):
         return librosa.load(url, offset=offset, duration=duration)
