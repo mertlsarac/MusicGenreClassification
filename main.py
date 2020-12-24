@@ -17,7 +17,7 @@ if __name__ == "__main__":
         type='linear'
     )
 
-    # spectrogram_5s.create_database("./database/Data/genres_original/", "./database/spectrograms/")
+    spectrogram_5s.create_database("./database/Data/genres_original/", "./database/spectrograms/enableOffset/")
 
     spectrogram = Spectrogram(
         frame_size=FRAME_SIZE,
@@ -29,7 +29,7 @@ if __name__ == "__main__":
         type='linear'
     )
 
-    # spectrogram.create_database("./database/Data/genres_original/", "./database/spectrograms/")
+    spectrogram.create_database("./database/Data/genres_original/", "./database/spectrograms/default/")
 
     mel_spectrogram = Spectrogram(
         frame_size=FRAME_SIZE,
@@ -79,20 +79,13 @@ if __name__ == "__main__":
 
     # log_spectrogram_5s.create_database("./database/Data/genres_original/", "./database/log_spectrograms/enableOffset/")
 
-    createDatabasePickle("./database/spectrograms/default/", "./database/pickles/spectrograms/default/",
-                         feature_type="spectrogram30s")
-    createDatabasePickle("./database/spectrograms/enableOffset/", "./database/pickles/spectrograms/enableOffset/",
-                         feature_type="spectrogram5s")
-    createDatabasePickle("./database/mel_spectrograms/default/", "./database/pickles/mel_spectrograms/default/",
-                         feature_type="melSpectrogram30s")
-    createDatabasePickle("./database/mel_spectrograms/enableOffset/", "./database/pickles/mel_spectrograms/enableOffset/",
-                         feature_type="melSpectrogram5s")
-    createDatabasePickle("./database/log_spectrograms/default/", "./database/pickles/log_spectrograms/default/",
-                         feature_type="logSpectrogram30s")
-    createDatabasePickle("./database/log_spectrograms/enableOffset/", "./database/pickles/log_spectrograms/enableOffset/",
-                         feature_type="logSpectrogram5s")
+    createDatabasePickle("./database/spectrograms/default/", "./database/pickles/", feature_type="spectrogram30s")
+    createDatabasePickle("./database/spectrograms/enableOffset/", "./database/pickles/", feature_type="spectrogram5s")
+    # createDatabasePickle("./database/mel_spectrograms/default/", "./database/pickles/", feature_type="melSpectrogram30s")
+    # createDatabasePickle("./database/mel_spectrograms/enableOffset/", "./database/pickles/",feature_type="melSpectrogram5s")
+    # createDatabasePickle("./database/log_spectrograms/default/", "./database/pickles/", feature_type="logSpectrogram30s")
+    # createDatabasePickle("./database/log_spectrograms/enableOffset/", "./database/pickles/", feature_type="logSpectrogram5s")
 
     cnn = CNN()
-    cnn.load_data("./database/pickles/spectrograms/default/")
-    cnn.build_network_architecture()
-    cnn.train()
+    cnn.createCNN1model("spectrogram30s", "./database/pickles/spectrogram30s_data.pkl")
+    cnn.createCNN1model("spectrogram5s", "./database/pickles/spectrogram5s_data.pkl")

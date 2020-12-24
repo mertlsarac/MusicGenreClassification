@@ -100,7 +100,7 @@ class Spectrogram:
 
     def save(self, y_scale, save_path):
         fig = pylab.gcf()
-        fig.set_size_inches(2.4, 2.4)
+        fig.set_size_inches(7, 7)
         pylab.axis('off')  # no axis
         pylab.axes([0., 0., 1., 1.], frameon=False, xticks=[], yticks=[])  # Remove the white edge
 

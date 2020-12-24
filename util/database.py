@@ -2,6 +2,7 @@ import os
 from PIL import Image
 import numpy as np
 import pandas as pd
+import gc
 
 
 def createDatabasePickle(dataset_path, save_path, feature_type):
