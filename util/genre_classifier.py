@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 from tensorflow.python.keras.utils.np_utils import to_categorical  # convert to one-hot-encoding
 from tensorflow.python.keras import Sequential
-from tensorflow.python.keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D
+from tensorflow.python.keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D, UpSampling2D
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras.callbacks import ModelCheckpoint, EarlyStopping
 from sklearn import metrics
@@ -77,7 +77,37 @@ class CNN:
         optimizer = tf.keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999)
 
         model.compile(optimizer=optimizer, loss="categorical_crossentropy", metrics=["accuracy"])
+        model.summary()
+        return model
 
+
+    @staticmethod
+    def create_model_2(X_train):
+        model = Sequential()
+        #
+        model.add(Conv2D(filters=16, kernel_size=(3, 3), padding='Same', activation='relu', input_shape=(X_train.shape[1], X_train.shape[2], X_train.shape[3])))
+        model.add(MaxPool2D(pool_size=(2, 2)))
+        model.add(Dropout(0.25))
+        #
+        model.add(Conv2D(filters=32, kernel_size=(3, 3), padding='Same', activation='relu'))
+        model.add(MaxPool2D(pool_size=(2, 2)))
+        model.add(Dropout(0.25))
+        ##decoding layer
+        model.add(Conv2D(filters=16, strides=(2, 2), kernel_size=(3, 3), padding='Same', activation='relu'))
+        # model.add(UpSampling2D((2,2)))
+        model.add(Conv2D(filters=16, kernel_size=(3, 3), padding='Same', activation='relu'))
+        model.add(UpSampling2D((2, 2)))
+        # fully connected layer
+        model.add(Flatten())
+        model.add(Dense(256, activation="relu"))
+        model.add(Dropout(0.5))
+        model.add(Dense(10, activation="softmax"))
+        # %
+        # Define the optimizer
+        optimizer = tf.keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999)
+        # %
+        model.compile(optimizer=optimizer, loss="categorical_crossentropy", metrics=["accuracy"])
+        model.summary()
         return model
 
 
