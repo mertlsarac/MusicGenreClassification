@@ -2,7 +2,6 @@ import os
 from PIL import Image
 import numpy as np
 import pandas as pd
-import gc
 
 
 def createDatabasePickle(dataset_path, save_path, feature_type):
@@ -27,3 +26,14 @@ def createDatabasePickle(dataset_path, save_path, feature_type):
     dataframe = pd.DataFrame(x_values)
     dataframe['Category'] = y_values
     dataframe.to_pickle(save_path + feature_type + "_data.pkl")
+
+
+def load_data_from_pickle(pickle_path):
+    data = pd.read_pickle(pickle_path)
+    data = data.sample(frac=1).reset_index(drop=True)
+    # put labels into y_train variable
+    labels = data['Category']
+    # Drop 'label' column
+    data = data.drop(labels=['Category'], axis=1)
+    return data, labels
+
