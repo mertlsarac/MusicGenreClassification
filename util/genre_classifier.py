@@ -23,6 +23,7 @@ class CNN:
         pat = 10  # this is the number of epochs with no improvement after which the training will stop
         return EarlyStopping(monitor='val_loss', patience=pat, verbose=1)
 
+
     @staticmethod
     def create_test_and_train(x, y):
         # Normalize the data
@@ -45,10 +46,12 @@ class CNN:
 
         return X_train, X_test, Y_train, Y_test
 
+
     @staticmethod
     def create_model_checkpoint(data_type):
         checkpointPath = data_type + '_CNN1_checkpoint.h5'
         return ModelCheckpoint(checkpointPath, verbose=1, save_best_only=True)
+
 
     @staticmethod
     def create_model(X_train):
@@ -77,6 +80,7 @@ class CNN:
 
         return model
 
+
     @staticmethod
     def fit_and_choose_best(models, callbacks, x_trains, x_tests, y_trains, y_tests, n=5):
         accuracies = []
@@ -100,6 +104,7 @@ class CNN:
         most_successful_index = accuracies.index(max(accuracies))
 
         return accuracies, most_successful_index
+
 
     @staticmethod
     def predictTest(X_test, Y_test, lmodel, fold):

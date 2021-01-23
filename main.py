@@ -1,5 +1,6 @@
 from tensorflow.python.keras.utils.vis_utils import plot_model
 
+from util.plot_utils import drawConfusionMatrix
 from util.spectrogram import Spectrogram
 from util.genre_classifier import *
 from util.database import *
@@ -95,6 +96,7 @@ if __name__ == "__main__":
     # createDatabasePickle("./database/log_spectrograms/enableOffset/", "./database/pickles/", feature_type="logSpectrogram5s")
 
     # load pickle file
+    spectrogram_type = "spectrogram5s"
     data, labels = load_data_from_pickle("./database/pickles/spectrogram5s_data.pkl")
     print("    Data loaded! ✅")
 
@@ -102,7 +104,7 @@ if __name__ == "__main__":
     early_stopping = CNN.create_early_stopping()
 
     # create model checkpoint
-    model_checkpoint = CNN.create_model_checkpoint("spectrogram5s")
+    model_checkpoint = CNN.create_model_checkpoint(spectrogram_type)
     callbacks = [early_stopping, model_checkpoint]
     print("    Callbacks created! ✅")
 
@@ -131,3 +133,15 @@ if __name__ == "__main__":
 
     print("Accuracies: ", accuracies)
     # plot_model(model, to_file='model_plot_Cnn1.png', show_shapes=True, show_layer_names=True)
+
+    gc.collect()
+    print("Train and Test Data Saved. ✅")
+    accuracies = np.array(accuracies)
+    meanAccuracy = np.mean(accuracies)
+    print(meanAccuracy)
+    bestModel = tf.keras.models[most_successful_index].load_model(spectrogram_type + '_CNN1_checkpoint.h5')
+    drawConfusionMatrix(x_tests[most_successful_index], y_tests[most_successful_index], bestModel)
+    np.save("X_train.npy", x_trains[most_successful_index])
+    np.save("Y_train.npy", y_trains[most_successful_index])
+    np.save("X_test.npy", x_tests[most_successful_index])
+    np.save("Y_test.npy", y_tests[most_successful_index])
