@@ -15,7 +15,14 @@ from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras.callbacks import ModelCheckpoint, EarlyStopping
 from sklearn import metrics
 import tensorflow as tf
+import numpy as np
+from sklearn import metrics
+from sklearn.metrics import classification_report, confusion_matrix
 
+from util.decoder_encoder import fitLabelDecoder
+import matplotlib.pyplot as plt
+import seaborn as sns
+import gc
 
 class CNN:
     @staticmethod
@@ -49,7 +56,7 @@ class CNN:
 
     @staticmethod
     def create_model_checkpoint(data_type):
-        checkpointPath = data_type + '_CNN1_checkpoint.h5'
+        checkpointPath = data_type + 'checkpoint.h5'
         return ModelCheckpoint(checkpointPath, verbose=1, save_best_only=True)
 
 
@@ -112,32 +119,49 @@ class CNN:
 
 
     @staticmethod
-    def fit_and_choose_best(models, callbacks, x_trains, x_tests, y_trains, y_tests, n=5):
-        accuracies = []
-        index = 0
-        for x_train, x_test, y_train, y_test, model in zip(x_trains, x_tests, y_trains, y_tests, models):
-            print("x_train data shape: ", x_train.shape)
-            print("x_test data shape: ", x_test.shape)
+    def fit_and_choose_best(callbacks, data, labels, n, spectrogram_type, accuracies, index, cnn_2=False):
+        x_train, x_test, y_train, y_test = CNN.create_test_and_train(data, labels)
 
-            # split for validation
-            xx_train, xx_val, yy_train, yy_val = train_test_split(x_train, y_train, test_size=0.1,
-                                                      random_state=np.random.randint(1, 1000, 1)[0])
-            gc.collect()
-            model, history = CNN.fit_and_evaluate(xx_train, xx_val, yy_train, yy_val, model, callbacks)
+        # create models
+        if cnn_2:
+            model = CNN.create_model_2(x_train)
+        else:
+            model = CNN.create_model(x_train)
 
-            current_accuracy = CNN.predictTest(x_test, y_test, model)
-            index += 1
-            print(index, 'th Accuracy percentage:', current_accuracy)
-            # update max acc
-            accuracies.append(current_accuracy)
+        print("    Models, tests and trains created! ✅")
 
-        most_successful_index = accuracies.index(max(accuracies))
+        print("x_train data shape: ", x_train.shape)
+        print("x_test data shape: ", x_test.shape)
 
-        return accuracies, most_successful_index
+        # split for validation
+        xx_train, xx_val, yy_train, yy_val = train_test_split(x_train, y_train, test_size=0.1,
+                                                  random_state=np.random.randint(1, 1000, 1)[0])
+        gc.collect()
+        model, history = CNN.fit_and_evaluate(xx_train, xx_val, yy_train, yy_val, model, callbacks)
+
+        current_accuracy = CNN.predictTest(x_test, y_test, model)
+        index += 1
+        print(index, 'th Accuracy percentage:', current_accuracy)
+
+        del xx_train
+        del xx_val
+        del yy_train
+        del yy_val
+        del model
+        del history
+        # update max acc
+        if len(accuracies) == 0 or max(accuracies) < current_accuracy:
+            np.save(spectrogram_type + "X_train.npy", x_train)
+            np.save(spectrogram_type + "Y_train.npy", y_train)
+            np.save(spectrogram_type + "X_test.npy", x_test)
+            np.save(spectrogram_type + "Y_test.npy", y_test)
+            print("Train and Test Data Saved. ✅")
+
+        return current_accuracy
 
 
     @staticmethod
-    def predictTest(X_test, Y_test, lmodel, fold):
+    def predictTest(X_test, Y_test, lmodel):
         Y_pred = lmodel.predict(X_test)
         # Convert predictions classes to one hot vectors
         Y_pred_classes = np.argmax(Y_pred, axis=1)
@@ -147,6 +171,7 @@ class CNN:
         # compute the confusion matrix
         labels = ["blues", "classical", "country", "disco", "hiphop", "jazz", "metal", "pop", "reggae", "rock"]
         confusion_mtx = confusion_matrix(Y_test_label, Y_pred_classes)
+
         acc = metrics.accuracy_score(Y_test_label, Y_pred_classes) * 100
         return acc
 

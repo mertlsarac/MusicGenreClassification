@@ -37,3 +37,14 @@ def load_data_from_pickle(pickle_path):
     data = data.drop(labels=['Category'], axis=1)
     return data, labels
 
+
+
+def load_data_from_pickle(pickle_path):
+    data = pd.read_pickle(pickle_path)
+    data = data.sample(frac=1).reset_index(drop=True)
+    # put labels into y_train variable
+    labels = data['Category']
+    # Drop 'label' column
+    data = data.drop(labels=['Category'], axis=1)
+    return data, labels
+

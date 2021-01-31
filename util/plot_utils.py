@@ -43,7 +43,7 @@ def plotAccLossGraphics(history):
 
 
 # confusion matrix-precios-recall
-def drawConfusionMatrix(X_test, Y_test, lmodel):
+def drawConfusionMatrix(X_test, Y_test, lmodel, save_fig_path):
     Y_pred = lmodel.predict(X_test)
     # Convert predictions classes to one hot vectors
     Y_pred_classes = np.argmax(Y_pred, axis=1)
@@ -61,7 +61,8 @@ def drawConfusionMatrix(X_test, Y_test, lmodel):
     plt.xlabel("Predicted Label")
     plt.ylabel("True Label")
     plt.title("Confusion Matrix")
-    plt.show()
+    # plt.show()
+    plt.savefig(save_fig_path)
     acc = metrics.accuracy_score(Y_test_label, Y_pred_classes) * 100
     print(classification_report(Y_test_label, Y_pred_classes))
     score = lmodel.evaluate(X_test, Y_test, verbose=0)

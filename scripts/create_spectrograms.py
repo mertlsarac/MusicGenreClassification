@@ -15,7 +15,7 @@ def create_spectrograms():
         type='linear'
     )
 
-    # spectrogram.create_database("./database/Data/genres_original/", "./database/spectrograms/default/")
+    spectrogram.create_database("./database/Data/genres_original/", "./database/spectrograms/default/")
     del spectrogram
 
     spectrogram_5s = Spectrogram(
@@ -28,7 +28,7 @@ def create_spectrograms():
         type='linear'
     )
 
-    # spectrogram_5s.create_database("./database/Data/genres_original/", "./database/spectrograms/enableOffset/")
+    spectrogram_5s.create_database("./database/Data/genres_original/", "./database/spectrograms/enableOffset/")
     del spectrogram_5s
 
     mel_spectrogram = Spectrogram(
@@ -41,7 +41,7 @@ def create_spectrograms():
         type='mel'
     )
 
-    # mel_spectrogram.create_database("./database/Data/genres_original/", "./database/mel_spectrograms/default/")
+    mel_spectrogram.create_database("./database/Data/genres_original/", "./database/mel_spectrograms/default/")
     del mel_spectrogram
 
     mel_spectrogram_5s = Spectrogram(
@@ -54,7 +54,7 @@ def create_spectrograms():
         type='mel'
     )
 
-    # mel_spectrogram_5s.create_database("./database/Data/genres_original/", "./database/mel_spectrograms/enableOffset/")
+    mel_spectrogram_5s.create_database("./database/Data/genres_original/", "./database/mel_spectrograms/enableOffset/")
     del mel_spectrogram_5s
 
     log_spectrogram = Spectrogram(
@@ -67,7 +67,7 @@ def create_spectrograms():
         type='log'
     )
 
-    # log_spectrogram.create_database("./database/Data/genres_original/", "./database/log_spectrograms/default/")
+    log_spectrogram.create_database("./database/Data/genres_original/", "./database/log_spectrograms/default/")
     del log_spectrogram
 
     log_spectrogram_5s = Spectrogram(
@@ -80,5 +80,5 @@ def create_spectrograms():
         type='log'
     )
 
-    # log_spectrogram_5s.create_database("./database/Data/genres_original/", "./database/log_spectrograms/enableOffset/")
+    log_spectrogram_5s.create_database("./database/Data/genres_original/", "./database/log_spectrograms/enableOffset/")
     del log_spectrogram_5s

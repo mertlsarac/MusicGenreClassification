@@ -94,13 +94,13 @@ class Spectrogram:
         return Y_scale
 
     def create_mel(self, scale, sr):
-        M = librosa.feature.melspectrogram(scale, sr=sr, n_fft=self.frame_size, hop_length=self.hop_size, n_mels=10)
+        M = librosa.feature.melspectrogram(scale, sr=sr, n_fft=self.frame_size, hop_length=self.hop_size, n_mels=20)
         M_db = librosa.power_to_db(M)
         return M_db
 
     def save(self, y_scale, save_path):
         fig = pylab.gcf()
-        fig.set_size_inches(7, 7)
+        fig.set_size_inches(2.4, 2.4)
         pylab.axis('off')  # no axis
         pylab.axes([0., 0., 1., 1.], frameon=False, xticks=[], yticks=[])  # Remove the white edge
 
